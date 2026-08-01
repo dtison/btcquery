@@ -1,0 +1,12 @@
+{
+  "name": "btcquery",
+  "version": "0.1.0",
+  "description": "btcquery is a read-only client for an Electrum server. It does not maintain its own blockchain database.",
+  "license": "MIT",
+  "author": "David Ison assisted by ChatGPT.",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
