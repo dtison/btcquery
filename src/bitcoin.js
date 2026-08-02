@@ -12,6 +12,7 @@
  * - create or broadcast transactions
  */
 
+import crypto from "node:crypto";
 
 export default function Bitcoin() {
 
@@ -70,14 +71,14 @@ export default function Bitcoin() {
 
     function decodeBech32(address) {
 
-    if (address !== address.toLowerCase() &&
-        address !== address.toUpperCase()) {
-        throw new Error(
-            "Mixed case Bech32 string"
-        );
-    }
+        if (address !== address.toLowerCase() &&
+            address !== address.toUpperCase()) {
+            throw new Error(
+                "Mixed case Bech32 string"
+            );
+        }
 
-    address = address.toLowerCase();
+        address = address.toLowerCase();
 
         const separator = address.lastIndexOf("1");
 
@@ -119,7 +120,105 @@ export default function Bitcoin() {
         };
     }
 
+
+    function convertBits(data, fromBits, toBits, pad = true) {
+        let accumulator = 0;
+        let bits = 0;
+        const result = [];
+
+        const maxValue = (1 << toBits) - 1;
+
+        for (const value of data) {
+
+            if (value < 0 || (value >> fromBits) !== 0) {
+                throw new Error("Invalid data value");
+            }
+
+            accumulator =
+                (accumulator << fromBits) | value;
+
+            bits += fromBits;
+
+            while (bits >= toBits) {
+
+                bits -= toBits;
+
+                result.push(
+                    (accumulator >> bits) & maxValue
+                );
+            }
+        }
+
+        if (pad && bits > 0) {
+            result.push(
+                (accumulator << (toBits - bits)) & maxValue
+            );
+        }
+
+        return result;
+    }
+    function sha256(data) {
+
+        return crypto
+            .createHash("sha256")
+            .update(data)
+            .digest();
+    }
+
+    function addressToScriptHash(address) {
+
+        const decoded =
+            decodeBech32(address);
+
+        if (decoded.hrp !== "bc") {
+            throw new Error(
+                "Only Bitcoin mainnet addresses supported"
+            );
+        }
+
+        const witnessVersion =
+            decoded.data[0];
+
+        if (witnessVersion !== 0) {
+            throw new Error(
+                "Only witness version 0 supported"
+            );
+        }
+
+        const program =
+            Buffer.from(
+                convertBits(
+                    decoded.data.slice(1),
+                    5,
+                    8,
+                    false
+                )
+            );
+
+        if (program.length !== 20) {
+            throw new Error(
+                "Only P2WPKH addresses supported"
+            );
+        }
+
+        const scriptPubKey =
+            Buffer.concat([
+                Buffer.from([0x00, 0x14]),
+                program
+            ]);
+
+        const hash =
+            sha256(scriptPubKey);
+
+        return Buffer
+            .from(hash)
+            .reverse()
+            .toString("hex");
+    }
+
     return Object.freeze({
-        decodeBech32
+        decodeBech32,
+        addressToScriptHash
     });
+   
 }
