@@ -11,7 +11,10 @@ export default function ElectrumClient(
     function connect() {
         return new Promise((resolve, reject) => {
             socket = net.createConnection(
-                { host, port },
+                {
+                    host,
+                    port
+                },
                 () => resolve()
             );
 
@@ -36,11 +39,12 @@ export default function ElectrumClient(
         return new Promise((resolve, reject) => {
             const id = nextId++;
 
-            const payload = JSON.stringify({
-                id,
-                method,
-                params
-            }) + "\n";
+            const payload =
+                JSON.stringify({
+                    id,
+                    method,
+                    params
+                }) + "\n";
 
             function onData(chunk) {
                 buffer += chunk;
@@ -77,10 +81,18 @@ export default function ElectrumClient(
     }
 
     async function serverVersion() {
-        return request("server.version", [
-            "btcquery",
-            "1.4"
-        ]);
+        const result = await request(
+            "server.version",
+            [
+                "btcquery",
+                "1.4"
+            ]
+        );
+
+        return {
+            server: result[0],
+            protocol: result[1]
+        };
     }
 
     return Object.freeze({

@@ -1,21 +1,18 @@
 #!/usr/bin/env node
 
-/**
- * btcquery
- * A read-only Bitcoin blockchain query utility.
- */
+import ElectrumClient from "./electrum.js";
 
-const VERSION = "0.1.0";
+const VERSION = "0.2.1";
 
 function showHelp() {
     console.log(`
 btcquery ${VERSION}
 
 Usage:
-  btcquery <command> [options]
+  btcquery <command>
 
 Commands:
-  server          Test connection to the configured Electrum server
+  server          Test connection to Electrum server
 
 Options:
   -h, --help      Show this help
@@ -27,12 +24,47 @@ function showVersion() {
     console.log(VERSION);
 }
 
-function main() {
+async function serverCommand() {
+    const electrum = ElectrumClient();
+
+    console.log(
+        "Connecting to 127.0.0.1:50001..."
+    );
+
+    try {
+        await electrum.connect();
+
+        console.log();
+        console.log("Connected");
+        console.log();
+
+        const info =
+            await electrum.serverVersion();
+
+        console.log("Server");
+        console.log("------");
+        console.log(`Software : ${info.server}`);
+        console.log(`Protocol : ${info.protocol}`);
+
+        await electrum.close();
+
+    } catch (err) {
+        console.error();
+        console.error(
+            "Unable to connect to Electrum server."
+        );
+        console.error(err.message);
+
+        process.exit(1);
+    }
+}
+
+async function main() {
     const args = process.argv.slice(2);
 
     if (args.length === 0) {
         showHelp();
-        process.exit(0);
+        return;
     }
 
     switch (args[0]) {
@@ -47,13 +79,17 @@ function main() {
             break;
 
         case "server":
-            console.log("Not implemented yet.");
+            await serverCommand();
             break;
 
         default:
-            console.error(`Unknown command: ${args[0]}`);
-            console.error("Use --help for usage.");
-            process.exit(1);
+            console.error(
+                `Unknown command: ${args[0]}`
+            );
+            console.error(
+                "Use --help for usage."
+            );
+            process.exit(2);
     }
 }
 
