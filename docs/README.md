@@ -38,7 +38,7 @@ Current features:
 * Verify Electrum server connectivity.
 * Display Electrum server software and protocol version.
 
-Example:
+Example connect to server:
 
 ```bash
 btcquery server
@@ -57,8 +57,18 @@ Software : electrs/0.11.1
 Protocol : 1.4
 ```
 
-## Non-Features
+Example get address balance:
+```bash
+btcquery balance bc1qwsa5qkvdmlgndaqgh7l2hnlanrtulq66tep9e9
+```
 
+Output:
+```bash
+{ confirmed: 0, unconfirmed: 0 }
+```
+
+## Non-Features
+btcquery balance bc1qwsa5qkvdmlgndaqgh7l2hnlanrtulq66tep9e9
 `btcquery` is not a wallet.
 
 It does not and will not provide:

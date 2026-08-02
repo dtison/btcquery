@@ -13,7 +13,8 @@ Usage:
   btcquery <command>
 
 Commands:
-  server          Test connection to Electrum server
+  server                    Test connection to Electrum server
+  balance <Bech32 address>  Display balance
 
 Options:
   -h, --help      Show this help
