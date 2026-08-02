@@ -31,7 +31,13 @@ export default function ElectrumClient(
                 return;
             }
 
-            socket.end(resolve);
+            const currentSocket = socket;
+
+            socket = null;
+
+            currentSocket.end(() => {
+                resolve();
+            });
         });
     }
 

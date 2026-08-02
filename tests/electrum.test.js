@@ -13,3 +13,7 @@ const result =
     );
 
 console.log(result);
+
+await electrum.close();
+
+console.log("Connection closed");
