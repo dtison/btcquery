@@ -95,10 +95,18 @@ export default function ElectrumClient(
         };
     }
 
+    function getBalance(scripthash) {
+        return request(
+            "blockchain.scripthash.get_balance",
+            [scripthash]
+        );
+    }
+
     return Object.freeze({
         connect,
         close,
         request,
-        serverVersion
+        serverVersion,
+        getBalance
     });
 }
