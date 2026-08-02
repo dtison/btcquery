@@ -89,3 +89,14 @@ New commands should reuse the existing transport layer rather than creating new 
 Whenever practical, complexity should be reduced rather than added.
 
 The goal is to keep the project approachable for developers who wish to understand the entire codebase.
+
+
+## Current Address Support
+
+The initial implementation supports:
+
+- Bitcoin mainnet addresses
+- Native SegWit addresses
+- Bech32 encoding
+- Witness version 0
+- Pay-to-Witness-Public-Key-Hash (P2WPKH)
