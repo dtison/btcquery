@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import ElectrumClient from "./electrum.js";
+import Balance from "./balance.js";
 
 const VERSION = "0.2.1";
 
@@ -80,6 +81,15 @@ async function main() {
 
         case "server":
             await serverCommand();
+            break;
+
+        case "balance":
+
+            const result =
+                await Balance.getBalance(args[1]);
+
+            console.log(result);
+
             break;
 
         default:
