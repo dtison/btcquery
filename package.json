@@ -1,6 +1,6 @@
 {
   "name": "btcquery",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "btcquery is a read-only client for an Electrum server. It does not maintain its own blockchain database.",
   "license": "MIT",
   "author": "David Ison assisted by ChatGPT.",

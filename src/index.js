@@ -3,7 +3,7 @@
 import ElectrumClient from "./electrum.js";
 import Balance from "./balance.js";
 
-const VERSION = "0.2.1";
+const VERSION = "0.3.0";
 
 function showHelp() {
     console.log(`
