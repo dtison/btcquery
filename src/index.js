@@ -86,9 +86,7 @@ async function main() {
 
         case "balance":
 
-            const result =
-                await Balance.getBalance(args[1]);
-
+            const result = await new Balance().getBalance(args[1]);
             console.log(result);
 
             break;

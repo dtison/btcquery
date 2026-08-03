@@ -1,15 +1,15 @@
 import Bitcoin from "./bitcoin.js";
 import Electrum from "./electrum.js";
 
-function Balance() {
+export default function Balance() {
 
     async function getBalance(address) {
 
         const bitcoin = Bitcoin();
         const electrum = Electrum();
 
-        const scripthash =
-            bitcoin.addressToScriptHash(address);
+        const electrumhash =
+            bitcoin.addressToElectrumScriptHash(address);
 
         await electrum.connect(
             "127.0.0.1",
@@ -18,7 +18,7 @@ function Balance() {
 
         const result =
             await electrum.getBalance(
-                scripthash
+                electrumhash
             );
 
         await electrum.close();
@@ -30,5 +30,4 @@ function Balance() {
         getBalance,
     });
 }
-
-export default Balance();
+ 
