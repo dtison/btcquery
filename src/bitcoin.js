@@ -168,7 +168,110 @@ export default function Bitcoin() {
             .digest();
     }
 
-    function addressToScriptHash(address) {
+    function addressToElectrumScriptHash(address) {
+
+        if (typeof address !== "string") {
+            throw new Error(
+                "Bitcoin address must be a string"
+            );
+        }
+
+        if (address.startsWith("bc1")) {
+            return bech32AddressToElectrumScriptHash(address);
+        }
+
+        if (address.startsWith("1")) {
+            return p2pkhAddressToScriptHash(address);
+        }
+
+        throw new Error(
+            "Unsupported Bitcoin address type"
+        );
+    }
+
+   function bech32AddressToElectrumScriptHash(address) {
+
+        const decoded =
+            decodeBech32(address);
+
+        const witnessVersion =
+            decoded.data[0];
+
+        if (witnessVersion !== 0) {
+            throw new Error(
+                "Unsupported witness version"
+            );
+        }
+
+        const witnessProgram =
+            Buffer.from(
+                convertBits(
+                    decoded.data.slice(1),
+                    5,
+                    8,
+                    false
+                )
+            );
+
+        const scriptPubKey =
+            Buffer.concat([
+                Buffer.from([
+                    0x00,
+                    witnessProgram.length
+                ]),
+                witnessProgram
+            ]);
+
+        return scriptPubKeyToElectrumScriptHash(
+            scriptPubKey
+        );
+    }
+
+    function p2pkhAddressToScriptHash(address) {
+
+        const decoded =
+            decodeBase58Check(address);
+
+        if (decoded.version !== 0) {
+            throw new Error(
+                "Unsupported P2PKH version"
+            );
+        }
+
+        const scriptPubKey =
+            Buffer.concat([
+                Buffer.from([
+                    0x76,
+                    0xa9,
+                    0x14
+                ]),
+                decoded.payload,
+                Buffer.from([
+                    0x88,
+                    0xac
+                ])
+            ]);
+
+        return scriptPubKeyToElectrumScriptHash(
+            scriptPubKey
+        );
+    }
+
+    function scriptPubKeyToElectrumScriptHash(scriptPubKey) {
+
+        const hash =
+            sha256(scriptPubKey);
+
+        const reversed =
+            Buffer.from(hash).reverse();
+
+        return reversed.toString("hex");
+    }
+
+    
+
+    /*
+    function addressToElectrumScriptHash(address) {
 
         const decoded =
             decodeBech32(address);
@@ -218,7 +321,7 @@ export default function Bitcoin() {
             .reverse()
             .toString("hex");
     }
-
+*/
     function decodeBase58(value) {
 
         let number = 0n;
@@ -269,10 +372,45 @@ export default function Bitcoin() {
         ]);
     }
 
+    function decodeBase58Check(address) {
+
+        const decoded =
+            decodeBase58(address);
+
+        if (decoded.length < 5) {
+            throw new Error(
+                "Invalid Base58Check length"
+            );
+        }
+
+        const payload =
+            decoded.subarray(0, -4);
+
+        const checksum =
+            decoded.subarray(-4);
+
+        const expected =
+            sha256(
+                sha256(payload)
+            ).subarray(0, 4);
+
+        if (!checksum.equals(expected)) {
+            throw new Error(
+                "Invalid Base58 checksum"
+            );
+        }
+
+        return {
+            version: payload[0],
+            payload: payload.subarray(1)
+        };
+    }
+
     return Object.freeze({
         decodeBech32,
         decodeBase58,
-        addressToScriptHash
+        decodeBase58Check,
+        addressToElectrumScriptHash
     });
    
 }
