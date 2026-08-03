@@ -69,7 +69,7 @@ btcquery balance bc1qwsa5qkvdmlgndaqgh7l2hnlanrtulq66tep9e9
 Output:
 
 ```text
-{ confirmed: 0, unconfirmed: 0 }
+{ confirmed: "0.00000000", unconfirmed: "0.00000000" }
 ```
 
 Example connect to electrs on another host (LAN or VPN):

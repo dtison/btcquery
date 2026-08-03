@@ -27,3 +27,7 @@ Implemented:
 - Support for P2PKH addresses in addition to Bech32
 - Remote Electrum server support via --host and --port flags
 - Documentation improvements for trusted network usage
+
+## v0.3.2 Planned Features
+
+- Format balance display as Bitcoin values (e.g., 0.01234 instead of 1234000 satoshis)
