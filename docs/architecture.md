@@ -41,7 +41,7 @@ btcquery/
 
 ├── docs/
 ├── src/
-├── test/
+├── tests/
 ├── README.md
 ├── CONTRIBUTING.md
 ├── LICENSE
@@ -63,12 +63,9 @@ address.js          Address parsing and script hash conversion
 
 formatter.js        Human-readable formatting
 
-commands/
-    server.js
-    balance.js
-    utxo.js
-    history.js
-    info.js
+balance.js          Balance command logic
+
+bitcoin.js          Bitcoin address parsing
 ```
 
 ## Responsibilities
@@ -93,10 +90,10 @@ The goal is to keep the project approachable for developers who wish to understa
 
 ## Current Address Support
 
-The initial implementation supports:
+The application supports both Bech32 (P2WPKH) and P2PKH Bitcoin addresses:
 
 - Bitcoin mainnet addresses
-- Native SegWit addresses
-- Bech32 encoding
+- Native SegWit addresses (Bech32 encoding)
 - Witness version 0
 - Pay-to-Witness-Public-Key-Hash (P2WPKH)
+- Pay-to-Pubkey-Hash (P2PKH)

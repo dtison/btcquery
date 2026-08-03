@@ -22,4 +22,8 @@ Implemented:
 - Electrum balance queries
 - `btcquery balance <address>` command
 
-The application can now query public Bitcoin address balances through a user's own electrs instance without private keys or wallet access.
+## v0.3.1 Enhancements
+
+- Support for P2PKH addresses in addition to Bech32
+- Remote Electrum server support via --host and --port flags
+- Documentation improvements for trusted network usage

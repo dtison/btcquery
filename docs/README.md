@@ -39,6 +39,7 @@ Current features:
 * Display Electrum server software and protocol version.
 * Query address balances.
 * Select Electrum host and port with CLI flags.
+* Support for P2PKH (Pay-to-Pubkey-Hash) addresses in addition to Bech32.
 
 Example connect to server:
 
@@ -79,6 +80,8 @@ btcquery --host 10.0.0.5 balance bc1qwsa5qkvdmlgndaqgh7l2hnlanrtulq66tep9e9
 ```
 
 Electrum JSON-RPC is plaintext. Only use `--host` over a trusted network path (private LAN, WireGuard, or similar). Do not expose electrs to the public internet.
+
+The application supports both local and remote Electrum servers via --host and --port flags.
 
 ## Non-Features
 
@@ -246,6 +249,14 @@ The project follows a read-only design philosophy:
 * No signing.
 * No transaction broadcasting.
 * No external blockchain APIs.
+
+## Address Support
+
+The application supports both Bech32 (P2WPKH) and P2PKH Bitcoin addresses:
+
+* Native SegWit addresses (Bech32 encoding)
+* Pay-to-Witness-Public-Key-Hash (P2WPKH) 
+* Pay-to-Pubkey-Hash (P2PKH)
 
 ## Contributing
 
