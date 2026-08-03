@@ -2,6 +2,7 @@
 
 import ElectrumClient from "./electrum.js";
 import Balance from "./balance.js";
+import History from "./history.js";
 import { parseArgs } from "./args.js";
 
 const VERSION = "0.3.1";
@@ -15,7 +16,8 @@ Usage:
 
 Commands:
   server                    Test connection to Electrum server
-  balance <Bech32 address>  Display balance
+  balance <address>         Display balance
+  history <address>         Display transaction history
 
 Options:
   --host <host>   Electrum server host (default: 127.0.0.1)
@@ -27,6 +29,7 @@ Examples:
   btcquery server
   btcquery --host 10.0.0.5 --port 50001 server
   btcquery --host 10.0.0.5 balance bc1q...
+  btcquery history bc1q...
 `);
 }
 
@@ -94,6 +97,31 @@ async function balanceCommand(address, host, port) {
     }
 }
 
+async function historyCommand(address, host, port) {
+    if (!address) {
+        console.error(
+            "Usage: btcquery history <address>"
+        );
+        process.exit(2);
+    }
+
+    try {
+        const result = await History().getHistory(
+            address,
+            { host, port }
+        );
+
+        console.log(result);
+    } catch (err) {
+        console.error();
+        console.error(
+            "Unable to query history."
+        );
+        console.error(err.message);
+        process.exit(1);
+    }
+}
+
 async function main() {
     let parsed;
 
@@ -122,6 +150,14 @@ async function main() {
 
         case "balance":
             await balanceCommand(
+                parsed.args[0],
+                parsed.host,
+                parsed.port
+            );
+            break;
+
+        case "history":
+            await historyCommand(
                 parsed.args[0],
                 parsed.host,
                 parsed.port

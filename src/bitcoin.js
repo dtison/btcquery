@@ -268,60 +268,6 @@ export default function Bitcoin() {
         return reversed.toString("hex");
     }
 
-    
-
-    /*
-    function addressToElectrumScriptHash(address) {
-
-        const decoded =
-            decodeBech32(address);
-
-        if (decoded.hrp !== "bc") {
-            throw new Error(
-                "Only Bitcoin mainnet addresses supported"
-            );
-        }
-
-        const witnessVersion =
-            decoded.data[0];
-
-        if (witnessVersion !== 0) {
-            throw new Error(
-                "Only witness version 0 supported"
-            );
-        }
-
-        const program =
-            Buffer.from(
-                convertBits(
-                    decoded.data.slice(1),
-                    5,
-                    8,
-                    false
-                )
-            );
-
-        if (program.length !== 20) {
-            throw new Error(
-                "Only P2WPKH addresses supported"
-            );
-        }
-
-        const scriptPubKey =
-            Buffer.concat([
-                Buffer.from([0x00, 0x14]),
-                program
-            ]);
-
-        const hash =
-            sha256(scriptPubKey);
-
-        return Buffer
-            .from(hash)
-            .reverse()
-            .toString("hex");
-    }
-*/
     function decodeBase58(value) {
 
         let number = 0n;

@@ -38,6 +38,7 @@ Current features:
 * Verify Electrum server connectivity.
 * Display Electrum server software and protocol version.
 * Query address balances.
+* Query address transaction history.
 * Select Electrum host and port with CLI flags.
 * Support for P2PKH (Pay-to-Pubkey-Hash) addresses in addition to Bech32.
 
@@ -71,6 +72,24 @@ Output:
 ```text
 { confirmed: "0.00000000", unconfirmed: "0.00000000" }
 ```
+
+Example get address history:
+
+```bash
+btcquery history bc1qwsa5qkvdmlgndaqgh7l2hnlanrtulq66tep9e9
+```
+
+Output:
+
+```text
+[
+  { height: 700000, tx_hash: "abc..." },
+  { height: 700001, tx_hash: "def..." }
+]
+```
+
+Each entry is a transaction affecting the address. `height` is the block
+height (0 or negative for unconfirmed). `tx_hash` is the transaction id.
 
 Example connect to electrs on another host (LAN or VPN):
 
@@ -220,6 +239,7 @@ index.js        Command-line interface
 args.js         CLI argument parsing
 electrum.js     Electrum protocol client
 balance.js      Balance command logic
+history.js      History command logic
 bitcoin.js      Address parsing and scripthash conversion
 ```
 

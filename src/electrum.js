@@ -108,11 +108,19 @@ export default function ElectrumClient(
         );
     }
 
+    function getHistory(scripthash) {
+        return request(
+            "blockchain.scripthash.get_history",
+            [scripthash]
+        );
+    }
+
     return Object.freeze({
         connect,
         close,
         request,
         serverVersion,
-        getBalance
+        getBalance,
+        getHistory
     });
 }

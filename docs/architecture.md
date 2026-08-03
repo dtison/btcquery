@@ -65,6 +65,8 @@ formatter.js        Human-readable formatting
 
 balance.js          Balance command logic
 
+history.js          History command logic
+
 bitcoin.js          Bitcoin address parsing
 ```
 
