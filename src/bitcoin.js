@@ -19,6 +19,9 @@ export default function Bitcoin() {
     const BECH32_CHARSET =
         "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
 
+    const BASE58_ALPHABET =
+        "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+
     function polymod(values) {
         const generator = [
             0x3b6a57b2,
@@ -216,8 +219,59 @@ export default function Bitcoin() {
             .toString("hex");
     }
 
+    function decodeBase58(value) {
+
+        let number = 0n;
+
+        for (const character of value) {
+
+            const digit =
+                BASE58_ALPHABET.indexOf(character);
+
+            if (digit === -1) {
+                throw new Error(
+                    "Invalid Base58 character"
+                );
+            }
+
+            number =
+                number * 58n +
+                BigInt(digit);
+        }
+
+        const bytes = [];
+
+        while (number > 0n) {
+
+            bytes.push(
+                Number(number & 0xffn)
+            );
+
+            number >>= 8n;
+        }
+
+        bytes.reverse();
+
+        let leadingZeros = 0;
+
+        for (const character of value) {
+
+            if (character !== "1") {
+                break;
+            }
+
+            leadingZeros++;
+        }
+
+        return Buffer.concat([
+            Buffer.alloc(leadingZeros),
+            Buffer.from(bytes)
+        ]);
+    }
+
     return Object.freeze({
         decodeBech32,
+        decodeBase58,
         addressToScriptHash
     });
    
