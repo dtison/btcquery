@@ -4,7 +4,7 @@ import ElectrumClient from "./electrum.js";
 import Balance from "./balance.js";
 import { parseArgs } from "./args.js";
 
-const VERSION = "0.3.0";
+const VERSION = "0.3.1";
 
 function showHelp() {
     console.log(`
