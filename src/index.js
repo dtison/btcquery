@@ -2,6 +2,7 @@
 
 import ElectrumClient from "./electrum.js";
 import Balance from "./balance.js";
+import { parseArgs } from "./args.js";
 
 const VERSION = "0.3.0";
 
@@ -10,15 +11,22 @@ function showHelp() {
 btcquery ${VERSION}
 
 Usage:
-  btcquery <command>
+  btcquery [options] <command>
 
 Commands:
   server                    Test connection to Electrum server
   balance <Bech32 address>  Display balance
 
 Options:
+  --host <host>   Electrum server host (default: 127.0.0.1)
+  --port <port>   Electrum server port (default: 50001)
   -h, --help      Show this help
   -v, --version   Show version
+
+Examples:
+  btcquery server
+  btcquery --host 10.0.0.5 --port 50001 server
+  btcquery --host 10.0.0.5 balance bc1q...
 `);
 }
 
@@ -26,11 +34,11 @@ function showVersion() {
     console.log(VERSION);
 }
 
-async function serverCommand() {
-    const electrum = ElectrumClient();
+async function serverCommand(host, port) {
+    const electrum = ElectrumClient(host, port);
 
     console.log(
-        "Connecting to 127.0.0.1:50001..."
+        `Connecting to ${host}:${port}...`
     );
 
     try {
@@ -61,39 +69,68 @@ async function serverCommand() {
     }
 }
 
-async function main() {
-    const args = process.argv.slice(2);
+async function balanceCommand(address, host, port) {
+    if (!address) {
+        console.error(
+            "Usage: btcquery balance <address>"
+        );
+        process.exit(2);
+    }
 
-    if (args.length === 0) {
+    try {
+        const result = await Balance().getBalance(
+            address,
+            { host, port }
+        );
+
+        console.log(result);
+    } catch (err) {
+        console.error();
+        console.error(
+            "Unable to query balance."
+        );
+        console.error(err.message);
+        process.exit(1);
+    }
+}
+
+async function main() {
+    let parsed;
+
+    try {
+        parsed = parseArgs(process.argv.slice(2));
+    } catch (err) {
+        console.error(err.message);
+        console.error("Use --help for usage.");
+        process.exit(2);
+    }
+
+    if (parsed.help || (parsed.command === null && !parsed.version)) {
         showHelp();
         return;
     }
 
-    switch (args[0]) {
-        case "-h":
-        case "--help":
-            showHelp();
-            break;
+    if (parsed.version) {
+        showVersion();
+        return;
+    }
 
-        case "-v":
-        case "--version":
-            showVersion();
-            break;
-
+    switch (parsed.command) {
         case "server":
-            await serverCommand();
+            await serverCommand(parsed.host, parsed.port);
             break;
 
         case "balance":
-
-            const result = await new Balance().getBalance(args[1]);
-            console.log(result);
-
+            await balanceCommand(
+                parsed.args[0],
+                parsed.host,
+                parsed.port
+            );
             break;
 
         default:
             console.error(
-                `Unknown command: ${args[0]}`
+                `Unknown command: ${parsed.command}`
             );
             console.error(
                 "Use --help for usage."

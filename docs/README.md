@@ -34,9 +34,11 @@ The project intentionally avoids unnecessary complexity.
 
 Current features:
 
-* Connect to a local Electrum server.
+* Connect to a local or remote Electrum server.
 * Verify Electrum server connectivity.
 * Display Electrum server software and protocol version.
+* Query address balances.
+* Select Electrum host and port with CLI flags.
 
 Example connect to server:
 
@@ -58,17 +60,28 @@ Protocol : 1.4
 ```
 
 Example get address balance:
+
 ```bash
 btcquery balance bc1qwsa5qkvdmlgndaqgh7l2hnlanrtulq66tep9e9
 ```
 
 Output:
-```bash
+
+```text
 { confirmed: 0, unconfirmed: 0 }
 ```
 
+Example connect to electrs on another host (LAN or VPN):
+
+```bash
+btcquery --host 10.0.0.5 --port 50001 server
+btcquery --host 10.0.0.5 balance bc1qwsa5qkvdmlgndaqgh7l2hnlanrtulq66tep9e9
+```
+
+Electrum JSON-RPC is plaintext. Only use `--host` over a trusted network path (private LAN, WireGuard, or similar). Do not expose electrs to the public internet.
+
 ## Non-Features
-btcquery balance bc1qwsa5qkvdmlgndaqgh7l2hnlanrtulq66tep9e9
+
 `btcquery` is not a wallet.
 
 It does not and will not provide:
@@ -162,11 +175,34 @@ Show version:
 btcquery --version
 ```
 
-Test Electrum connectivity:
+Test Electrum connectivity (defaults to `127.0.0.1:50001`):
 
 ```bash
 btcquery server
 ```
+
+Connect to a remote Electrum server:
+
+```bash
+btcquery --host 10.0.0.5 --port 50001 server
+```
+
+Query an address balance on a remote server:
+
+```bash
+btcquery --host 10.0.0.5 balance bc1qwsa5qkvdmlgndaqgh7l2hnlanrtulq66tep9e9
+```
+
+### Options
+
+| Option | Description | Default |
+| ------ | ----------- | ------- |
+| `--host <host>` | Electrum server hostname or IP | `127.0.0.1` |
+| `--port <port>` | Electrum server TCP port | `50001` |
+| `-h`, `--help` | Show help | |
+| `-v`, `--version` | Show version | |
+
+Flags may appear before or after the command name.
 
 ## Development
 
@@ -178,7 +214,10 @@ Current source layout:
 src/
 
 index.js        Command-line interface
+args.js         CLI argument parsing
 electrum.js     Electrum protocol client
+balance.js      Balance command logic
+bitcoin.js      Address parsing and scripthash conversion
 ```
 
 Modules use a functional style with private state managed through closures.

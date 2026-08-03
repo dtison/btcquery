@@ -24,10 +24,13 @@ The project intentionally avoids any functionality that could place private key 
 `btcquery` assumes the following components are trusted:
 
 * Your Bitcoin full node.
-* Your local Electrum server.
+* Your Electrum server (local or on a host you control).
+* The network path to that Electrum server when using `--host`.
 * Your local operating system.
 
 No trust is placed in third-party blockchain explorers or remote query services.
+
+Electrum JSON-RPC is plaintext TCP. Prefer localhost, a private LAN, or a VPN. Do not expose electrs to the public internet.
 
 ## Privacy
 

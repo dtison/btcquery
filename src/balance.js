@@ -3,31 +3,28 @@ import Electrum from "./electrum.js";
 
 export default function Balance() {
 
-    async function getBalance(address) {
+    async function getBalance(address, options = {}) {
+        const host = options.host;
+        const port = options.port;
 
         const bitcoin = Bitcoin();
-        const electrum = Electrum();
+        const electrum = Electrum(host, port);
 
         const electrumhash =
             bitcoin.addressToElectrumScriptHash(address);
 
-        await electrum.connect(
-            "127.0.0.1",
-            50001
-        );
+        try {
+            await electrum.connect();
 
-        const result =
-            await electrum.getBalance(
+            return await electrum.getBalance(
                 electrumhash
             );
-
-        await electrum.close();
-
-        return result;
+        } finally {
+            await electrum.close();
+        }
     }
 
     return Object.freeze({
         getBalance,
     });
 }
- 
