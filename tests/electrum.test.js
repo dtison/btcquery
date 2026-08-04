@@ -1,11 +1,11 @@
 import Electrum from "../src/electrum.js";
+import { parseArgs } from "../src/args.js";
 
-const electrum = Electrum();
+const parsed = parseArgs(process.argv.slice(2));
 
-await electrum.connect(
-    "127.0.0.1",
-    50001
-);
+const electrum = Electrum(parsed.host, parsed.port);
+
+await electrum.connect();
 
 const result =
     await electrum.getBalance(

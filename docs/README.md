@@ -120,6 +120,13 @@ btcquery --host 10.0.0.5 --port 50001 server
 btcquery --host 10.0.0.5 balance bc1qwsa5qkvdmlgndaqgh7l2hnlanrtulq66tep9e9
 ```
 
+All commands support `--host` and `--port` flags for connecting to remote Electrum servers:
+
+```bash
+btcquery --host 10.0.0.5 --port 50001 history bc1q...
+btcquery --host 10.0.0.5 unspent bc1q...
+```
+
 Electrum JSON-RPC is plaintext. Only use `--host` over a trusted network path (private LAN, WireGuard, or similar). Do not expose electrs to the public internet.
 
 The application supports both local and remote Electrum servers via --host and --port flags.
