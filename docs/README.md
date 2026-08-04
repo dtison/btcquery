@@ -81,7 +81,7 @@ Your node. Your data. Your privacy.
 * Auditable
 * Privacy-focused
 * Dependency-light
-* Security
+* Secure
 
 The project intentionally avoids importing any npm libraries.
 
