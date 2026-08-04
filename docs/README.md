@@ -39,6 +39,7 @@ Current features:
 * Display Electrum server software and protocol version.
 * Query address balances.
 * Query address transaction history.
+* Query address unspent outputs (UTXOs).
 * Select Electrum host and port with CLI flags.
 * Support for P2PKH (Pay-to-Pubkey-Hash) addresses in addition to Bech32.
 
@@ -90,6 +91,27 @@ Output:
 
 Each entry is a transaction affecting the address. `height` is the block
 height (0 or negative for unconfirmed). `tx_hash` is the transaction id.
+
+Example list unspent outputs:
+
+```bash
+btcquery unspent bc1qwsa5qkvdmlgndaqgh7l2hnlanrtulq66tep9e9
+```
+
+Output:
+
+```text
+[
+  {
+    height: 700000,
+    tx_hash: "abc...",
+    tx_pos: 0,
+    value: "0.01234000"
+  }
+]
+```
+
+Each entry is a UTXO. `value` is in BTC. `height` is 0 for mempool outputs.
 
 Example connect to electrs on another host (LAN or VPN):
 
@@ -240,6 +262,7 @@ args.js         CLI argument parsing
 electrum.js     Electrum protocol client
 balance.js      Balance command logic
 history.js      History command logic
+unspent.js      Unspent outputs command logic
 bitcoin.js      Address parsing and scripthash conversion
 ```
 

@@ -32,3 +32,4 @@ Implemented:
 
 - Format balance display as Bitcoin values (e.g., 0.01234 instead of 1234000 satoshis)
 - `btcquery history <address>` via `blockchain.scripthash.get_history`
+- `btcquery unspent <address>` via `blockchain.scripthash.listunspent`

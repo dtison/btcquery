@@ -3,6 +3,7 @@
 import ElectrumClient from "./electrum.js";
 import Balance from "./balance.js";
 import History from "./history.js";
+import Unspent from "./unspent.js";
 import { parseArgs } from "./args.js";
 
 const VERSION = "0.3.1";
@@ -18,6 +19,7 @@ Commands:
   server                    Test connection to Electrum server
   balance <address>         Display balance
   history <address>         Display transaction history
+  unspent <address>         Display unspent outputs
 
 Options:
   --host <host>   Electrum server host (default: 127.0.0.1)
@@ -30,6 +32,7 @@ Examples:
   btcquery --host 10.0.0.5 --port 50001 server
   btcquery --host 10.0.0.5 balance bc1q...
   btcquery history bc1q...
+  btcquery unspent bc1q...
 `);
 }
 
@@ -122,6 +125,31 @@ async function historyCommand(address, host, port) {
     }
 }
 
+async function unspentCommand(address, host, port) {
+    if (!address) {
+        console.error(
+            "Usage: btcquery unspent <address>"
+        );
+        process.exit(2);
+    }
+
+    try {
+        const result = await Unspent().listUnspent(
+            address,
+            { host, port }
+        );
+
+        console.log(result);
+    } catch (err) {
+        console.error();
+        console.error(
+            "Unable to query unspent outputs."
+        );
+        console.error(err.message);
+        process.exit(1);
+    }
+}
+
 async function main() {
     let parsed;
 
@@ -158,6 +186,14 @@ async function main() {
 
         case "history":
             await historyCommand(
+                parsed.args[0],
+                parsed.host,
+                parsed.port
+            );
+            break;
+
+        case "unspent":
+            await unspentCommand(
                 parsed.args[0],
                 parsed.host,
                 parsed.port

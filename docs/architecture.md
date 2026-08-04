@@ -67,6 +67,8 @@ balance.js          Balance command logic
 
 history.js          History command logic
 
+unspent.js          Unspent outputs command logic
+
 bitcoin.js          Bitcoin address parsing
 ```
 

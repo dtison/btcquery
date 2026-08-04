@@ -115,12 +115,20 @@ export default function ElectrumClient(
         );
     }
 
+    function listUnspent(scripthash) {
+        return request(
+            "blockchain.scripthash.listunspent",
+            [scripthash]
+        );
+    }
+
     return Object.freeze({
         connect,
         close,
         request,
         serverVersion,
         getBalance,
-        getHistory
+        getHistory,
+        listUnspent
     });
 }
