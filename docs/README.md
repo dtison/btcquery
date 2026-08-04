@@ -4,7 +4,61 @@ A read-only Bitcoin blockchain query utility.
 
 `btcquery` is a lightweight command-line tool for querying Bitcoin blockchain information through a user's own local infrastructure.
 
-It is designed to work with a local Bitcoin full node and Electrum-compatible index server, avoiding the need to disclose addresses of interest to third-party blockchain explorers.
+It works with a local Bitcoin full node and Electrum-compatible index server, avoiding the need to disclose addresses of interest to third-party blockchain explorers. Since everything runs on your local private network, there is no communicating at all with any external servers. This preserves the privacy of your Bitcoin addresses and balances.
+
+## Quick Start
+
+- **Full Node**
+The source of data for btcquery is the public Bitcoin blockchain. There are several options: Bitcoin Core, Bitcoin Knots,Umbrel, myNode, nodl, Ronin Dojo, RaspiBlitz, Start9 Embassy.
+
+Set up your full node with these options in bitcoin.conf:
+
+    daemon=1
+    server=1
+    rest=1
+    zmqpubrawblock=tcp://127.0.0.1:28332
+    zmqpubrawtx=tcp://127.0.0.1:28333
+    rpcauth=electrs:password-hash
+    dbcache=2048
+    rpcbind=127.0.0.1
+    rpcallowip=127.0.0.0/8
+
+- **Electrum Server**
+
+The Electrum Server re-indexes the Bitcoin Blockchain in a way you can query by Bitcoin address **without** needing a wallet open or the security risks of having private keys attached to the internet. (Hot wallet risk)
+
+Use Electrs https://github.com/romanz/electrs. 
+
+electrs.toml:
+
+    network = "bitcoin"
+
+    # Bitcoin Knots RPC
+    daemon_rpc_addr = "127.0.0.1:8332"
+
+    # Bitcoin Knots P2P
+    daemon_p2p_addr = "127.0.0.1:8333"
+
+    # Knots data directory
+    daemon_dir = "/home/dtison/.bitcoin"
+
+    # Electrs database
+    db_dir = "/home/dtison/electrs-db"
+
+    # Local Electrum server
+    electrum_rpc_addr = "0.0.0.0:50001"
+
+    # Logging
+    log_filters = "INFO"
+
+    # RISC-V / 8GB RAM tuning
+    db_parallelism = 4
+
+    auth =  "electrs:password"
+
+Once the Bitcoin full node is sync'd and the electrs has indexed the blockchain, you should be able to connect using btcquery and the --host options.
+
+See architecture.md for more details of how everything works together.
 
 ## Why?
 
@@ -27,8 +81,9 @@ Your node. Your data. Your privacy.
 * Auditable
 * Privacy-focused
 * Dependency-light
+* Security
 
-The project intentionally avoids unnecessary complexity.
+The project intentionally avoids importing any npm libraries.
 
 ## Features
 
@@ -181,9 +236,8 @@ Bitcoin Core / Bitcoin Knots
  User Output
 ```
 
-`btcquery` does not maintain its own blockchain index.
-
-It queries information from your existing Bitcoin infrastructure.
+ 
+Btcquery retrieves information from your existing Bitcoin infrastructure.
 
 ## Installation
 
