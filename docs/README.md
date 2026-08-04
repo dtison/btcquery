@@ -111,13 +111,13 @@ Output:
 ]
 ```
 
-Each entry is a UTXO. `value` is in BTC. `height` is 0 for mempool outputs.
+Each entry is a transaction. `amount` shows the net effect on your balance (positive for incoming, negative for outgoing). `height` is 0 for mempool outputs.
 
 Example connect to electrs on another host (LAN or VPN):
 
 ```bash
 btcquery --host 10.0.0.5 --port 50001 server
-btcquery --host 10.0.0.5 balance bc1qwsa5qkvdmlgndaqgh7l2hnlanrtulq66tep9e9
+btcquery --host 10.0.0.5 history bc1qwsa5qkvdmlgndaqgh7l2hnlanrtulq66tep9e9
 ```
 
 All commands support `--host` and `--port` flags for connecting to remote Electrum servers:
